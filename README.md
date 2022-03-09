@@ -26,7 +26,7 @@ FOREIGN KEY Constraint   -- Used to ensure referential integrity of the data
 #-----------------LOGICAL OPERATORS
 
 #AND OPERATOR
-SELECT col FROM table_name WHERE year-of-passing = 2022 AND stream ="Engineering";
+\nSELECT col FROM table_name WHERE year-of-passing = 2022 AND stream ="Engineering";
 
 #OR OPERATOR
 SELECT col FROM table_name WHERE year-of-passing = 2022 OR experience >= "1 year";
