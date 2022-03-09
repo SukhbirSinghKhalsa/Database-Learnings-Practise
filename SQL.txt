@@ -188,12 +188,72 @@ END AS Age_Category
 FROM customer_table;
 #----------------------END OF CONDITIONAL STATEMENTS
 
+#COMBINING QUERIES (UNION, UNION ALL, INTERSECT, EXCEPT)
+
+
 
 
 #----------------------JOINS
+--JOINING/COMBINING INFORMATION FROM MULTIPLE TABLE FOR DATA INTERPRETATION, FINDINGS
+EG: 1) we want to find customer who haven't purchased anything from us
+    2) we want to give discounts/offers on technology products
+    3) I want to allocate marketing budget to different regions, find region-wise total sales for me
+
+-To Join tables what we need to know ?
+	1) Names of tables to be joined
+	2) Common column based on which we will  join them
+	3) The list of columns from each table
 
 
-SELECT col FROM table_name WHERE
+# INNER JOIN / SIMPLE JOIN 
+--select common column from both tables
+-- find intersection of specified column in join condition
+
+-Syntax:
+SELECT col FROM table_1 INNER JOIN table_2 ON table_1.common_field = table_2.common_field
+
+
+
+# LEFT OUTER JOIN / LEFT JOIN
+- Select all columns present in left table and matching columns from right table
+- We get NULL from right table in this type of join
+- eg:
+  we want to find customer who haven't purchased anything from us so there order details from right table(order) will contain Null values as they haven't purchased anything yet, so data is not present in order tables and only present in customer table
+
+-Syntax:
+SELECT col FROM table_1 LEFT JOIN table_2 ON table_1.common_field = table_2.common_field
+
+
+
+# RIGHT OUTER JOIN/ RIGHT JOIN
+- Select all columns present in right table and matching columns from left table
+- We get NULL from left table in this type of join
+- eg:
+   we get sales from new customers who are not in our customer table, so to find that we do right join on them keeping (customer) table on left and (sales) table on right as there is no data available of this new customer in our customer table, we will get new customers from our sales table
+
+-Syntax:
+SELECT col FROM table_1 RIGHT JOIN table_2 ON table_1.common_field = table_2.common_field
+
+
+# FULL OUTER JOIN/ FULL JOIN
+select all columns present in both tables
+
+SELECT col FROM table_1 FULL JOIN table_2 ON table_1.common_field = table_2.common_field
+
+
+# CROSS JOIN / CARTESIAN PRODUCT
+
+
+# SELF JOIN
+
+https://www.mysqltutorial.org/mysql-subquery/
+
+
+SELECT col FROM table_1 INNER JOIN table_2 ON table_1.common_field = table_2.common_field
+SELECT col FROM table_1 LEFT JOIN table_2 ON table_1.common_field = table_2.common_field
+SELECT col FROM table_1 RIGHT JOIN table_2 ON table_1.common_field = table_2.common_field
+SELECT col FROM table_1 FULL JOIN table_2 ON table_1.common_field = table_2.common_field
+
 
 SELECT col FROM table_name WHERE
 
@@ -246,6 +306,15 @@ INSERT INTO DEMO VALUES ('M1', 'TA', 'TB'),
 SELECT LOSS FROM DEMO GROUP BY LOSS UNION SELECT WON FROM DEMO GROUP BY WON;
 
 //GETTING UNIQUE TEAM NAMES and count 50% done
-SELECT distinct(loss),count(LOSs) as "team_name" FROM DEMO GROUP BY LOSS UNION  SELECT distinct(won), count(WON) FROM DEMO GROUP BY WON
+SELECT loss,count(LOSs) as "team_name" FROM DEMO GROUP BY LOSS UNION  SELECT won, count(WON) FROM DEMO GROUP BY WON
 
+//
+select loss, count(loss) from DEMO group by loss
+UNION
+select won,count(won) from DEMO group by won;
+
+ select won,count(won) from ( select won,count(won) from DEMO group by loss union all select loss,count(loss) from DEMO group by loss) as ssk group by won;
+
+//100% done
+select won as teams,count(won) as total_matches from ( select won,count(won) from DEMO group by loss union all select loss,count(loss) from DEMO group by loss) as ssk group by won;
 
