@@ -25,8 +25,8 @@ FOREIGN KEY Constraint   -- Used to ensure referential integrity of the data
 
 #-----------------LOGICAL OPERATORS
 
-#AND OPERATOR
-\nSELECT col FROM table_name WHERE year-of-passing = 2022 AND stream ="Engineering";
+#AND OPERATOR<br>
+SELECT col FROM table_name WHERE year-of-passing = 2022 AND stream ="Engineering";
 
 #OR OPERATOR
 SELECT col FROM table_name WHERE year-of-passing = 2022 OR experience >= "1 year";
@@ -38,7 +38,7 @@ SELECT col FROM table_name WHERE NOT age < 18
 
 
 
-#CREATE NEW TABLE , DUPLICATE OF EXISTING TABLE
+#CREATE NEW TABLE , DUPLICATE OF EXISTING TABLE <br>
 CREATE TABLE table_name as SELECT * FROM old_table_name;
 
 
