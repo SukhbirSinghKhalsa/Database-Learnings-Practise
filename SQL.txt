@@ -1,0 +1,251 @@
+#To view all databases 
+SHOW DATABASES;
+
+#To use any database
+USE <database-name>;
+
+#To view all the tables in particular database
+SHOW TABLES;
+
+#default date format 'yyyy-mm-dd'
+'2000-10-09'
+
+
+#------------------CONSTRAINTS
+
+NOT NULL Constraint 	-- Ensures that a column cannot have Null value
+
+DEFAULT Constraint  	-- Provides a default value for a column where none is specified/ given or value not 				   inserted, 
+			   Eg: auto generate Pass@123 for all the user appering for assessment
+
+UNIQUE Constraint   	-- Ensures that all the values in column are different
+			   Eg: no repeatation of number, it could be your adhaar card, pan no, bank account no,
+			   skills, background, interests, problems, goals, vision 
+
+CHECK Constraint    	-- Makes sure that all values in column satisfy certain given criteria
+			   Eg: no negative numbers, year must be greater then 2000, age greater then 18, age 				   between 11 - 18
+
+PRIMARY KEY Constraint  -- Used to Uniquely Identify a row in a table, cannot be NULL and must have all UNIQUE/ 			   different values
+
+FOREIGN KEY Constraint  -- Used to ensure referential integrity of the data
+
+#------------------END OF CONSTRAINTS
+
+
+
+#-----------------LOGICAL OPERATORS
+
+#AND OPERATOR
+SELECT col FROM table_name WHERE year-of-passing = 2022 AND stream ="Engineering";
+
+#OR OPERATOR
+SELECT col FROM table_name WHERE year-of-passing = 2022 OR experience >= "1 year";
+
+#NOT OPERATOR
+SELECT col FROM table_name WHERE NOT age < 18;
+
+#-----------------END OF LOGICAL OPERATORS
+
+
+
+#CREATE NEW TABLE , DUPLICATE OF EXISTING TABLE
+CREATE TABLE table_name as SELECT * FROM old_table_name;
+
+
+#IN OPERATOR
+SELECT col FROM table_name WHERE name = "sukhbir" or name = "sukhi" or name = "ssk";
+equivalent to
+SELECT col FROM table_name WHERE name IN ("sukhbir","sukhi","ssk");
+
+
+#BETWEEN OPERATOR
+SELECT col FROM table_name WHERE salary >= 10000 AND salary <= 30000;
+equivalent to
+SELECT col FROM table_name WHERE salary BETWEEN 10000 AND 30000;
+
+
+#LIKE OPERATOR --- % = any string of any length(including zero length), _ = single character
+SELECT col FROM table_name WHERE name LIKE 'Sukh%';  //starts with Sukh
+SELECT col FROM table_name WHERE name LIKE '%bir';   // ends with bir
+SELECT col FROM table_name WHERE name LIKE '_uk%ir'; // 2nd & 3rd char = uk, and  2nd last & last char = ir
+SELECT col FROM table_name WHERE name LIKE '10_\%';  // to check if % present use escape character '\%'
+
+
+#ORDER BY - default ASC, other option DESC
+SELECT col FROM table_name [WHERE condition] ORDER BY age;
+SELECT col FROM table_name [WHERE condition] ORDER BY year ASC, score DESC;
+SELECT col FROM table_name [WHERE condition] ORDER BY 2 DESC; // 2 is column number
+
+
+#LIMIT -- limits result set upto desired number of row_count 
+SELECT col FROM table_name [WHERE condition] LIMIT 5;  //here we get rows as our output
+
+
+#AS -- alias, temp name for data representation or for readablitily of query
+SELECT col AS column_alias FROM table_name;
+
+#DISTINCT -- return unique values
+SELECT DISTINCT(col) FROM table_name [WHERE condition];
+
+
+
+#----------------------AGGREGATE FUNCTIONS
+
+SELECT MAX(col) FROM table_name [WHERE condition];
+
+SELECT MIN(col) FROM table_name [WHERE condition];
+
+SELECT SUM(col) FROM table_name [WHERE condition];
+
+SELECT AVG(col) FROM table_name [WHERE condition];
+
+SELECT COUNT(col) FROM table_name [WHERE condition]; //excludes counting null values 
+
+SELECT COUNT(*) FROM table_name [WHERE condition];   //includes count of null values also or we can say all rows 							      of given table
+SELECT COUNT(1) FROM table_name [WHERE condition];   //same like count(*) , not be confused 1 is not column no here
+
+#----------------------END OF AGGREGATE FUNCTIONS
+
+
+#----------------------GROUP BY & HAVING CLAUSE
+
+#GROUP BY -- group the result by one or more columns
+
+SELECT col, aggreagete_func_type(col) FROM table_name  GROUP BY col_name;
+//aggreagte_func_type can be min, max, count, avg, sum.
+
+
+#HAVING clause
+-- written after/with group up clause
+-- having is used for giving condition to aggregate fucntions
+--whereas where is used to specify condition to non-aggregate functions 
+
+SELECT col, aggreagete_function_type(col) FROM table_name  GROUP BY col_name HAVING aggregate_func(col);
+//aggreagte_func_type can be min, max, count, avg, sum.
+
+eg:
+1)Get no of customer living in particular city, state
+QUERY:
+SELECT region, count(customer_id) FROM customer GROUP BY region;
+
+2)Get quantity of each product sold from sales table 
+QUERY:
+SELECT product_id, SUM(quantity) as quanitity_sold FROM sales GROUP BY product_id ORDER BY quantity_sold DESC;
+
+3)Get top 5 customers customers who spend most in our company products
+QUERY:
+SELECT customer_id, MIN(sales), MAX(sales), AVG(sales), SUM(sales) AS total_sales FROM sales_table
+GROUP BY customer_id, 
+ORDER BY total_sales DESC,
+LIMIT 5; 
+
+4) Get count of region having more then 200 customers
+SELECT region, COUNT(customer_id) AS customer_count FROM customer_table 
+GROUP BY region HAVING count(customer_id) > 200;
+
+#----------------------END OF GROUP BY & HAVING CLAUSE
+
+#----------------------CONDITIONAL STATEMENT : CASE WHEN THEN ELSE (like if else statement in programming)
+SYNTAX: SELECT col, CASE WHEN expression THEN result
+[WHEN....]
+[ELSE result] 
+END
+FROM table_name [WHERE...]
+
+or
+
+SELECT col, CASE expression WHEN value THEN result
+[WHEN....]
+[ELSE result] 
+END
+FROM table_name [WHERE...]
+
+
+1)ASSIGN GRADES TO STUDENTS BASED ON MARKS:
+MARKS > 90 "A+"
+MARKS > 70 "A"
+MARKS > 50 "B"
+MARKS >= 40 "C"
+MARKS < 40 "FAIL"
+
+QUERY:
+SELECT id, name, marks, CASE
+WHEN MARKS > 90 THEN "A+"
+WHEN MARKS > 70 THEN "A"
+WHEN MARKS > 50 THEN "B"
+WHEN MARKS >= 40 THEN "C"
+ELSE "FAIL"
+END AS "grade"
+FROM students ORDER BY id;
+
+2)categorize ages into young(age < 30), senior citizen(age > 60), middle aged(age>30 & age <60) based on their ages
+
+SELECT *, CASE 
+WHEN age < 30 THEN "Young"
+WHEN age > 60 THEN "Senior Citizen"
+ELSE "Middle Aged"
+END AS Age_Category
+FROM customer_table;
+#----------------------END OF CONDITIONAL STATEMENTS
+
+
+
+#----------------------JOINS
+
+
+SELECT col FROM table_name WHERE
+
+SELECT col FROM table_name WHERE
+
+SELECT col FROM table_name WHERE
+
+SELECT col FROM table_name WHERE
+
+SELECT col FROM table_name WHERE
+
+SELECT col FROM table_name WHERE
+
+SELECT col FROM table_name WHERE
+
+SELECT col FROM table_name WHERE
+
+SELECT col FROM table_name WHERE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------
+
+
+CREATE TABLE DEMO  ( MATCHS VARCHAR PRIMARY KEY, WON VARCHAR, LOSS VARCHAR);
+
+INSERT INTO DEMO VALUES ('M1', 'TA', 'TB'),
+('M2', 'TB', 'TC'),
+('M3', 'TC', 'TD'),
+('M4', 'TD', 'TF'),
+('M5', 'TE', 'TG'),
+('M6', 'TA', 'TH'),
+('M7', 'TB', 'TI');
+
+//GETTING UNIQUE TEAM NAMES
+SELECT LOSS FROM DEMO GROUP BY LOSS UNION SELECT WON FROM DEMO GROUP BY WON;
+
+//GETTING UNIQUE TEAM NAMES and count 50% done
+SELECT distinct(loss),count(LOSs) as "team_name" FROM DEMO GROUP BY LOSS UNION  SELECT distinct(won), count(WON) FROM DEMO GROUP BY WON
+
+
