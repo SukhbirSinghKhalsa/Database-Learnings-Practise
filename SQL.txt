@@ -188,9 +188,15 @@ END AS Age_Category
 FROM customer_table;
 #----------------------END OF CONDITIONAL STATEMENTS
 
-#COMBINING QUERIES (UNION, UNION ALL, INTERSECT, EXCEPT)
+#COMBINING QUERIES (UNION, UNION ALL, INTERSECT, INTERSSECT ALL EXCEPT)
 
+**structure of output from both the two queries should be same
 
+UNION
+   UNION operator must have same numbe rof field in the result set with similar datatypes,
+
+#SUBQUERY
+In in sub query can have one column only
 
 
 #----------------------JOINS
