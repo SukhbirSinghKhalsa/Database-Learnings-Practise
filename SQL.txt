@@ -1,15 +1,58 @@
 #To view all databases 
-SHOW DATABASES;
+	SHOW DATABASES;
 
 #To use any database
-USE <database-name>;
+	USE <database-name>;
 
 #To view all the tables in particular database
-SHOW TABLES;
+	SHOW TABLES;
 
 #default date format 'yyyy-mm-dd'
-'2000-10-09'
+	'2000-10-09'
 
+#to check all constraints available in table
+	SHOW CREATE TABLE table_name\G;
+
+#to drop foreign key 
+	type "SHOW CREATE TABLE table_name\G;"
+	//from this get foreign key constraint name then type
+
+	ALTER TABLE table_name DROP FOREIGN KEY 'foreign key constraint name';
+
+
+#adding foreign key in mysql -- helps with integrity constraint
+	//during creation of table	
+		CREATE TABLE table_name (col_name datatype(size),
+		FOREIGN KEY(pk_col_name) REFERENCES table_name_with_pk_col_name(col_name));
+
+	//after creation of table
+		ALTER TABLE table_name
+		ADD FOREIGN KEY (col_name) REFERENCES table_name_with_pk_col_name(col);
+
+
+#check constraint -- to  not allow certain values or we can say allow only desired values
+
+	//during creation of table
+		CREATE TABLE table_name (col_name datatype(size),
+		CONSTRAINT "constraint_name" CHECK( colname >/</=/<=/>=/<> "values" [AND another_col]);
+
+	//after creation of table
+		ALTER TABLE table_name
+		ADD CONSTRAINT CONSTRAINT "constraint_name" CHECK( colname >/</=/<=/>=/<> "values" [AND another_col]);;
+
+#to create duplicate table as existing table
+	CREATE TABLE table_name as SELECT * FROM existing_table_name;
+//this will copy the column but not properties of column like primary key, foriegn key, default,  not null, check constraints assocaited with existing table
+
+
+#adding default value -- if nothing specified it gets added in that row value of column having default
+	eg: adding default age "18" when someone visits adult sites
+		
+	//during creation of table
+		CREATE TABLE table_name(col_name datatype(size) DEFAULT "some default value",[col n]);
+
+	//after creation of table
+		ALTER TABLE table_name ALTER col_name SET DEFAULT "some default value";
 
 #------------------CONSTRAINTS
 
@@ -210,14 +253,88 @@ EG: 1) we want to find customer who haven't purchased anything from us
 	2) Common column based on which we will  join them
 	3) The list of columns from each table
 
+****** If there are duplicates/repeatation in common columns used to join 2 or more tables then it causes duplication in mapped result set too
+
+for example:
+
+MariaDB [ssk]> select * from demo;
++----+------+------------+
+| id | name | phone      |
++----+------+------------+
+|  1 | a    | 2147483647 |
+|  2 | b    |       1213 |
+|  3 | c    |       3422 |
++----+------+------------+
+
+
+MariaDB [ssk]> select * from demo1;
++----+------+------------+
+| id | name | phone      |
++----+------+------------+
+|  4 | a    | 2147483647 | * a
+|  5 | a    |       1213 |
+|  6 | fc   |       3422 | * a
+|  7 | a    |         12 | * a
++----+------+------------+
+
+
+MariaDB [ssk]> SELECT * FROM demo INNER JOIN demo1 ON demo.name = demo1.name;
++----+------+------------+----+------+------------+
+| id | name | phone      | id | name | phone      |
++----+------+------------+----+------+------------+
+|  1 | a    | 2147483647 |  4 | a    | 2147483647 |
+|  1 | a    | 2147483647 |  5 | a    |       1213 |
+|  1 | a    | 2147483647 |  7 | a    |         12 |
++----+------+------------+----+------+------------+
+
+here you can see id,name,phone(col1,col2,col3) of demo having name = "a" are repeated thrice as it has entry of name = "a" 3 times in demo1
+
+*****so, we must select common column such that there exists no duplicate/repeatative values in common column of joined tables
+
+-------------------------------------------
 
 # INNER JOIN / SIMPLE JOIN 
 --select common column from both tables
 -- find intersection of specified column in join condition
 
--Syntax:
+- Syntax:
 SELECT col FROM table_1 INNER JOIN table_2 ON table_1.common_field = table_2.common_field
 
+- Example:
+MariaDB [ssk]> select * from customer_table;
++----+--------+-------+----------------+
+| id | name   | phone | email          |
++----+--------+-------+----------------+
+|  1 | sukh   |   123 | sukh@xyz.com   |
+|  2 | kitu   |   456 | kitu@xyz.com   |
+|  3 | manish |   776 | manish@xyz.com |
++----+--------+-------+----------------+
+3 rows in set (0.00 sec)
+
+MariaDB [ssk]> select * from sales_table;
++-------------+----------+----------------+
+| customer_id | order_id | sold_item      |
++-------------+----------+----------------+
+|        NULL |        5 | controller     |
+|        NULL |        6 | joker keychain |
+|           1 |       11 | soda           |
+|           3 |       12 | protien power  |
+|           2 |       13 | bike cover     |
+|           3 |       14 | pubg keychain  |
++-------------+----------+----------------+
+6 rows in set (0.00 sec)
+
+MariaDB [ssk]> #Existing customers who ordered items from us
+MariaDB [ssk]> select c.id, c.name, s.sold_item from customer_table as c inner join sales_table as s on c.id = s.customer_id;
++----+--------+---------------+
+| id | name   | sold_item     |
++----+--------+---------------+
+|  1 | sukh   | soda          |
+|  3 | manish | protien power |
+|  2 | kitu   | bike cover    |
+|  3 | manish | pubg keychain |
++----+--------+---------------+
+4 rows in set (0.00 sec)
 
 
 # LEFT OUTER JOIN / LEFT JOIN
@@ -242,12 +359,34 @@ SELECT col FROM table_1 RIGHT JOIN table_2 ON table_1.common_field = table_2.com
 
 
 # FULL OUTER JOIN/ FULL JOIN
-select all columns present in both tables
+- select all columns present in both tables
+- combines both the results of left and right outer joins
+- mysql does not support full outer join.
+- so, we can union left and right outer joins to get the same results as full outer join
 
+Syntax:
 SELECT col FROM table_1 FULL JOIN table_2 ON table_1.common_field = table_2.common_field
 
 
 # CROSS JOIN / CARTESIAN PRODUCT
+
+Syntax:
+SELECT table1.col, table1.col, ... FROM table1,table2,[table3];
+
+- takes both the tables, for every row in table1 it will map all the values in table2
+- useful when something repeatative needs to be joined together 
+
+eg 1): mapping years with each month
+i.e one month table having all the 12 months, other year table having desired years to be mapped with months
+	SELECT a.YYYY, b.mm FROM year_table AS a, month_table AS b;
+
+eg 2): table a = {1,2,3,4}
+       table b = {5,6,7}
+cartesian product  = {(1,5) (1,6) (1,7)
+		      (2,5) (2,6) (2,7)
+		      (3,5) (3,6) (3,7)
+		      (4,5) (4,6) (4,7)
+
 
 
 # SELF JOIN
@@ -296,6 +435,7 @@ SELECT col FROM table_name WHERE
 
 
 -------------------------------
+# DUMMY TABLES creation
 
 
 CREATE TABLE DEMO  ( MATCHS VARCHAR PRIMARY KEY, WON VARCHAR, LOSS VARCHAR);
@@ -323,4 +463,29 @@ select won,count(won) from DEMO group by won;
 
 //100% done
 select won as teams,count(won) as total_matches from ( select won,count(won) from DEMO group by loss union all select loss,count(loss) from DEMO group by loss) as ssk group by won;
+
+
+
+----------------------------
+
+create table demo1 ( id int primary key auto_increment, name varchar(10), phone int);
+
+create table demo as select * from demo1;
+//this does not copy property of tables like pk,fk, increment, default
+insert into demo (name,phone) values('a',9629301444),('b',1213),('c',3422);
+
+delete from demo;
+
+alter table demo modify id int primary key auto_increment;
+
+-----------------------------------
+create table customer_table (id int primary key auto_increment, name varchar(50), phone int,email varchar(50));
+
+insert into customer_table(name,phone,email) values("sukh",123,"sukh@xyz.com"),("kitu",456,"kitu@xyz.com"),("manish","776","manish@xyz.com")
+
+create table sales_table(customer_id int, order_id int primary key auto_increment, sold_item varchar(40), foreign key(customer_id) references customer_table(id));
+
+insert into sales_table (customer_id, sold_item) values(1,"soda"),(3,"protien power"),(2,"bike cover"),(3,"pubg keychain");
+
+insert into sales_table(sold_item) values("controller"),("joker keychain");
 
