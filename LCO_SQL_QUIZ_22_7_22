@@ -1,0 +1,181 @@
+----------------SECTION-1 EASY--------------
+
+1)The join in which all the  rows from the right table 
+appear in the output irrespective of the content of the other table is?
+
+-->RIGHT JOIN
+
+
+2)What code would you add to this query to order colors by name
+alphabetically (Z-A) ?
+
+-->ORDER BY name DESC
+
+
+3)What is meaning of having clause in mysql?
+
+-->to filter out the row values
+(i.e it is used to specify filter conditions for a group of rows)
+
+
+4)Calc no of days from 1st jan 2007 to present date.
+and store in format  of dd-mon-yy.
+which sql statement would be required for desired output ?
+
+-->SELECT SYSDATE - TO_DATE('01/JANUARY/2007') FROM DUAL;
+	or
+   SELECT SYSDATE - TO_DATE('01-JANUARY-2007') FROM DUAL;
+
+
+5)Assume a schema
+	Emp(Id, Name, DeptId),   Dept(Id, Name)
+If there are 10 records in Emp table and 5 records in Dept table,
+how many rows will be dsiplayed in the result of the following SQL
+query:
+  	(SELECT * FROM Emp, Dept;)
+
+--> Outputs 50 rows as a "cartesian product"
+
+
+----------------SECTION-2 Moderate--------------
+
+1)Correct syntax of UPDATE command in MYSQL
+--> UPDATE table_name SET column_name = <value> WHERE <condition>
+
+
+2)Deletion of an employee from table also deletes that employee
+ from another table. This kind of deletion is called?
+
+--> cascaded delete
+(In MYSQL, a cascaded delete & update is possible
+ where records can be deletd from multiple tables)
+
+
+3)which statement are False?
+
+-->
+a)RIGHT OUTER JOIN is equivalent to LEFT OUTER JOIN
+ if order of table are reversed
+b) SELF JOIN is a special kind of OUTER JOIN
+
+
+4)FULL OUTER JOIN is same as --> CROSS JOIN
+
+
+5)The X clause allows us to select only those rows in the result relation
+of the Y clause that satisfy a specified predicate.
+what are X & Y?
+
+--> X--> Where ,  Y--> From
+
+
+6)In which cases would you use an outer join?
+
+--> The tables being joined by both matched and unmatched data.
+
+(In U want all the rows from one of the tables and only matching rows 
+from the other table, you use an OUTER JOIN. In other words, the
+tables that are joined must have both matched and unmatched data)
+
+
+7)Consider a table customers, which SELECT statement displays
+all the employees who do not have any subordinates?
+(hint: subordinate -- means person under control of someone like
+manager, team lead,etc)
+
+--> SELECT e.employee_name FROM employee e
+WHERE e.employee_no NOT IN
+(SELECT m.manager_id FROM employee m 
+WHERE m.manager_id IS NOT NULL);
+
+
+8)What is LIKE operator?
+--> LIKE operator is a special operator that can be used with
+the WHERE clause to search for a pattern
+
+
+9)What is ORDER BY clause?
+--> A clause which sorts the result set alphabetically or numerically
+
+
+10) Which of statement are True about Delete operator?
+--> DELETE FROM ice_icream WHERE flavour IS NULL;
+
+
+11)Sam is trying to find mobile phones that ends with name "galaxy"
+.write a SQL query to help sam find it.
+
+--> SELECT * FROM mobile_phones WHERE phone_name LIKE '%galaxy';
+
+
+----------------SECTION-3 Hard--------------
+
+1)who are founders of Oracle?
+--> ED Oates, Bob Miner, Larry Ellison
+
+
+2)Which sql statement would you use to remove a view called
+EMP_DEPT_VIEW from your schema
+--> DROP VIEW emp_dept_view;
+
+
+3)In order to add new column in existing table, which command we can use?
+--> ALTER TABLE
+
+
+4)Latest verison of oracle as of 2020 is?
+-->19c
+
+
+5)which of following is not considered as constraints?
+--> NULL
+
+
+6)which of following are considered as constraints?
+--> Unique, Check, NOT NULL
+
+
+7)which operator is not appropriate in the join condition 
+of a non-equiv join SELECT statement?
+--> equal operator
+(The NON EQUI JOIN uses comparison operator 
+instead of the equal sign like >,<, >=, <= along with conditions)
+
+
+8)which operator is appropriate in the join condition 
+of a non-equiv join SELECT statement?
+--> IN operator, >, >=, Like operator
+
+
+9)Which of the followimg should be used to find mean of employee salary?
+(SELECT _____ FROM employees WHERE dept_name = `web`;
+
+-->avg(salary)
+
+
+10)which of the following represents the degree of the relation?
+--> No of attributes
+
+
+11) Cardinality refers to?
+-->uniqueness of data values contained in column
+
+
+12)Domain refers to?
+-->set of all unique values permitted for an attribute
+
+
+13)No of rows refers to?
+--> number of implicitly structured data items in a table.
+
+
+14)The following query can be replaced by?
+SELECT name,course_id
+FROM instructor,students
+WHERE instructor_id = student_id;
+
+--> SELECT name, course_id FROM instructor NATURAL JOIN students
+
+
+15)What is purpose of the * character?
+-->It selects every column in the table
